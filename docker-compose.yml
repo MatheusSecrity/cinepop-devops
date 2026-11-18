@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  servico-cartaz:
+    build: .
+    command: python servico1.py
+    ports:
+      - "5000:5000"
+
+  servico-poltronas:
+    build: .
+    command: python servico2.py
+    environment:
+      - DB_PATH=/app/dados/banco_cinepop.db
+    ports:
+      - "5001:5001"
+    volumes:
+      - ./dados_banco:/app/dados
+
+  servico-pagamento:
+    build: .
+    command: python servico3.py
+    environment:
+      - SERVICO_RESERVAS_URL=http://servico-poltronas:5001
+    ports:
+      - "5002:5002"
+    depends_on:
+      - servico-poltronas

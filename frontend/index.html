@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CinePop VIP | Cinema & Experiência</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #0a0c10;
+            --card-bg: #141824;
+            --card-hover: #1c2234;
+            --accent-gold: #fbbf24;
+            --accent-gold-hover: #f59e0b;
+            --accent-red: #e11d48;
+            --accent-green: #10b981;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-color: #262d40;
+            --cinema-screen: #38bdf8;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            background: rgba(20, 24, 36, 0.85);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            padding: 16px 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+
+        .brand-logo {
+            width: 38px;
+            height: 38px;
+            background: linear-gradient(135deg, var(--accent-red), var(--accent-gold));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 20px;
+            color: #000;
+            box-shadow: 0 4px 12px rgba(225, 29, 72, 0.3);
+        }
+
+        .brand-name {
+            font-size: 22px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            color: var(--text-main);
+        }
+
+        .brand-name span {
+            color: var(--accent-gold);
+        }
+
+        .devops-badge {
+            background: rgba(251, 191, 36, 0.1);
+            border: 1px solid rgba(251, 191, 36, 0.2);
+            color: var(--accent-gold);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .main-container {
+            max-width: 1100px;
+            width: 100%;
+            margin: 40px auto;
+            padding: 0 20px;
+            flex: 1;
+        }
+
+        .section-header {
+            margin-bottom: 28px;
+        }
+
+        .section-title {
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            margin-bottom: 8px;
+        }
+
+        .section-subtitle {
+            color: var(--text-muted);
+            font-size: 15px;
+        }
+
+        .sessoes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 24px;
+        }
+
+        .movie-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .movie-card:hover {
+            transform: translateY(-6px);
+            border-color: rgba(251, 191, 36, 0.4);
+            box-shadow: 0 16px 32px rgba(0, 0, 0, 0.4);
+        }
+
+        .movie-poster-wrap {
+            position: relative;
+            width: 100%;
+            height: 220px;
+            background: #1e293b;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .movie-poster {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s ease;
+        }
+
+        .movie-card:hover .movie-poster {
+            transform: scale(1.05);
+        }
+
+        .poster-card-custom {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            text-align: center;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+
+        .poster-card-custom::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: rgba(10, 12, 16, 0.4);
+        }
+
+        .poster-card-title {
+            position: relative;
+            z-index: 2;
+            font-size: 22px;
+            font-weight: 800;
+            color: #fff;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.8);
+            text-transform: uppercase;
+        }
+
+        .movie-content {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            flex: 1;
+        }
+
+        .movie-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: var(--text-main);
+        }
+
+        .movie-sinopse {
+            font-size: 13px;
+            color: var(--text-muted);
+            line-height: 1.4;
+            margin-bottom: 16px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .movie-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .tag {
+            background: rgba(148, 163, 184, 0.1);
+            color: var(--text-muted);
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .tag-highlight {
+            background: rgba(225, 29, 72, 0.15);
+            color: #f43f5e;
+        }
+
+        .card-action {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-top: 12px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--accent-gold);
+        }
+
+        #mapa-view {
+            display: none;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 32px;
+        }
+
+        .btn-back {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-bottom: 24px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-back:hover {
+            color: var(--text-main);
+            border-color: var(--text-muted);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .screen-container {
+            margin: 32px 0 40px 0;
+            text-align: center;
+        }
+
+        .screen {
+            height: 8px;
+            background: var(--cinema-screen);
+            border-radius: 4px;
+            box-shadow: 0 0 25px var(--cinema-screen);
+            margin-bottom: 12px;
+        }
+
+        .screen-text {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        .grid-poltronas {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 12px;
+            max-width: 520px;
+            margin: 0 auto;
+        }
+
+        .poltrona {
+            aspect-ratio: 1;
+            background: rgba(16, 185, 129, 0.15);
+            border: 1.5px solid rgba(16, 185, 129, 0.4);
+            color: var(--accent-green);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            user-select: none;
+        }
+
+        .poltrona:hover:not(.ocupada) {
+            transform: scale(1.08);
+            border-color: var(--accent-gold);
+        }
+
+        .poltrona.selecionada {
+            background: var(--accent-gold) !important;
+            border-color: var(--accent-gold) !important;
+            color: #000 !important;
+            box-shadow: 0 4px 12px rgba(251, 191, 36, 0.4);
+        }
+
+        .poltrona.ocupada {
+            background: rgba(225, 29, 72, 0.1);
+            border-color: rgba(225, 29, 72, 0.2);
+            color: rgba(225, 29, 72, 0.4);
+            cursor: not-allowed;
+        }
+
+        .legenda {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            margin-top: 36px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .legenda-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+
+        .legenda-dot {
+            width: 14px;
+            height: 14px;
+            border-radius: 4px;
+        }
+
+        .selection-bar {
+            margin-top: 28px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 16px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .btn-prosseguir {
+            background: var(--accent-gold);
+            color: #000;
+            border: none;
+            padding: 12px 28px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-prosseguir:hover:not(:disabled) {
+            background: var(--accent-gold-hover);
+        }
+
+        .btn-prosseguir:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(8px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 32px;
+            max-width: 440px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+        }
+
+        .modal-title {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .qr-box {
+            background: #fff;
+            padding: 16px;
+            border-radius: 12px;
+            display: inline-block;
+            margin: 16px 0;
+            box-shadow: 0 4px 15px rgba(255, 255, 255, 0.1);
+        }
+
+        .qr-box img {
+            width: 180px;
+            height: 180px;
+            display: block;
+        }
+
+        .pix-code-container {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px dashed var(--border-color);
+            border-radius: 8px;
+            padding: 10px;
+            font-size: 12px;
+            color: var(--text-muted);
+            word-break: break-all;
+            margin-bottom: 16px;
+        }
+
+        .btn-copia-pix {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--accent-gold);
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-copia-pix:hover {
+            background: rgba(251, 191, 36, 0.1);
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn-confirm {
+            flex: 1;
+            background: var(--accent-green);
+            color: #000;
+            border: none;
+            padding: 14px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 15px;
+            cursor: pointer;
+        }
+
+        .btn-confirm:hover {
+            background: #059669;
+            color: #fff;
+        }
+
+        .btn-cancel {
+            flex: 1;
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
+            padding: 14px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 15px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="#" class="brand">
+            <div class="brand-logo">C</div>
+            <div class="brand-name">Cine<span>Pop</span></div>
+        </a>
+        <div class="devops-badge">DevOps Resilient Node</div>
+    </header>
+
+    <div class="main-container">
+        <!-- Visão 1: Cartaz -->
+        <div id="cartaz-view">
+            <div class="section-header">
+                <h1 class="section-title">Filmes em Exibição</h1>
+                <p class="section-subtitle">Selecione uma sessão para reservar suas poltronas</p>
+            </div>
+            <div class="sessoes-grid" id="sessoes-container"></div>
+        </div>
+
+        <!-- Visão 2: Mapa de Poltronas -->
+        <div id="mapa-view">
+            <button class="btn-back" onclick="voltarParaCartaz()">
+                ← Voltar para a programação
+            </button>
+
+            <div class="section-header">
+                <h1 class="section-title" id="filme-selecionado-titulo">Selecione suas Poltronas</h1>
+                <p class="section-subtitle" id="sessao-info-detalhe">Sala 1 • Legendado</p>
+            </div>
+
+            <div class="screen-container">
+                <div class="screen"></div>
+                <div class="screen-text">TELA PRINCIPAL</div>
+            </div>
+
+            <div class="grid-poltronas" id="poltronas-grid"></div>
+
+            <div class="legenda">
+                <div class="legenda-item">
+                    <div class="legenda-dot" style="background: rgba(16, 185, 129, 0.2); border: 1.5px solid var(--accent-green);"></div>
+                    <span>Disponível</span>
+                </div>
+                <div class="legenda-item">
+                    <div class="legenda-dot" style="background: rgba(225, 29, 72, 0.2); border: 1.5px solid var(--accent-red);"></div>
+                    <span>Ocupada</span>
+                </div>
+                <div class="legenda-item">
+                    <div class="legenda-dot" style="background: var(--accent-gold);"></div>
+                    <span>Selecionada</span>
+                </div>
+            </div>
+
+            <div class="selection-bar">
+                <div>
+                    <span style="color: var(--text-muted); font-size: 14px;">Poltronas: </span>
+                    <strong id="poltronas-selecionadas-texto" style="color: var(--accent-gold);">Nenhuma</strong>
+                    <br>
+                    <span style="color: var(--text-muted); font-size: 14px;">Total: </span>
+                    <strong id="total-valor-texto" style="color: #fff;">R$ 0,00</strong>
+                </div>
+                <button class="btn-prosseguir" id="btn-abrir-pix" disabled onclick="abrirModalPix()">
+                    Ir para Pagamento →
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Pix Simulado -->
+    <div class="modal-overlay" id="modal-pix">
+        <div class="modal">
+            <h2 class="modal-title">Pagamento via PIX</h2>
+            <p style="color: var(--text-muted); font-size: 14px;">Abra o app do seu banco e escaneie o código abaixo</p>
+
+            <div class="qr-box">
+                <img id="qr-code-img" src="" alt="QR Code Pix Simulado">
+            </div>
+
+            <div class="pix-code-container" id="pix-copia-cola">
+                00020126580014br.gov.bcb.pix0136cinepop-simulado-pix-devops-2026520400005303986540535.005802BR5915CINEPOP_CINEMAS6009RIO_JANEIR620705031236304E8A2
+            </div>
+
+            <button class="btn-copia-pix" onclick="copiarPix()">
+                📋 Copiar Código Pix
+            </button>
+
+            <div class="modal-actions">
+                <button class="btn-cancel" onclick="fecharModalPix()">Cancelar</button>
+                <button class="btn-confirm" onclick="confirmarPagamentoSimulado()">Simular Pagamento</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let sessaoAtivaId = null;
+        let poltronasSelecionadas = new Set();
+        const VALOR_INGRESSO = 35.00;
+
+        const estilosFilmes = {
+            "Interestelar": "linear-gradient(135deg, #0f172a, #1e1b4b)",
+            "Divertida Mente 2": "linear-gradient(135deg, #0284c7, #7c3aed)",
+            "Batman": "linear-gradient(135deg, #18181b, #3f3f46)",
+            "Avatar: O Caminho da Água": "linear-gradient(135deg, #06b6d4, #0369a1)",
+            "O Poderoso Chefão": "linear-gradient(135deg, #451a03, #18181b)"
+        };
+
+        function tratarErroImagem(img, titulo) {
+            // Se falhou com a extensão enviada (ex: .jpg), tenta alternar para .jpeg ou .png antes de desistir
+            if (!img.dataset.tentouAlternativa) {
+                img.dataset.tentouAlternativa = "true";
+                if (img.src.endsWith('.jpg')) {
+                    img.src = img.src.replace('.jpg', '.jpeg');
+                    return;
+                } else if (img.src.endsWith('.jpeg')) {
+                    img.src = img.src.replace('.jpeg', '.jpg');
+                    return;
+                }
+            }
+            img.style.display = 'none';
+            if (img.nextElementSibling) {
+                img.nextElementSibling.style.display = 'flex';
+            }
+        }
+
+        async function carregarSessoes() {
+            try {
+                const res = await fetch('http://127.0.0.1:5000/sessoes');
+                const sessoes = await res.json();
+                const container = document.getElementById('sessoes-container');
+                container.innerHTML = '';
+
+                sessoes.forEach(s => {
+                    const card = document.createElement('div');
+                    card.className = 'movie-card';
+                    card.onclick = () => carregarMapaPoltronas(s.id, s.filme, s.horario, s.sala, s.idioma);
+                    
+                    const sinopseTexto = s.sinopse ? s.sinopse : 'Sessão exclusiva CinePop VIP.';
+                    const bgEstilo = estilosFilmes[s.filme] || "linear-gradient(135deg, #1e293b, #0f172a)";
+                    
+                    card.innerHTML = `
+                        <div class="movie-poster-wrap">
+                            <img class="movie-poster" src="${s.imagem}" alt="${s.filme}" 
+                                 onerror="tratarErroImagem(this, '${s.filme}')">
+                            <div class="poster-card-custom" style="display: none; background: ${bgEstilo};">
+                                <div class="poster-card-title">${s.filme}</div>
+                            </div>
+                        </div>
+                        <div class="movie-content">
+                            <div>
+                                <h3 class="movie-title">${s.filme}</h3>
+                                <p class="movie-sinopse">${sinopseTexto}</p>
+                                <div class="movie-meta">
+                                    <span class="tag tag-highlight">${s.horario}</span>
+                                    <span class="tag">Sala ${s.sala}</span>
+                                    <span class="tag">${s.idioma}</span>
+                                </div>
+                            </div>
+                            <div class="card-action">
+                                <span>Selecionar assentos</span>
+                                <span>→</span>
+                            </div>
+                        </div>
+                    `;
+                    container.appendChild(card);
+                });
+            } catch (err) {
+                document.getElementById('sessoes-container').innerHTML = 
+                    '<p style="color: var(--accent-red); grid-column: 1/-1;">Não foi possível conectar ao Serviço 1. Verifique se o backend está rodando.</p>';
+            }
+        }
+
+        async function carregarMapaPoltronas(sessao_id, titulo, horario, sala, idioma) {
+            sessaoAtivaId = sessao_id;
+            poltronasSelecionadas.clear();
+            atualizarBarraSelecao();
+
+            document.getElementById('cartaz-view').style.display = 'none';
+            document.getElementById('mapa-view').style.display = 'block';
+            
+            document.getElementById('filme-selecionado-titulo').innerText = titulo;
+            document.getElementById('sessao-info-detalhe').innerText = `Horário: ${horario} • Sala ${sala} • ${idioma}`;
+
+            try {
+                const res = await fetch(`http://127.0.0.1:5001/sessoes/${sessao_id}/poltronas`);
+                const dados = await res.json();
+                const grid = document.getElementById('poltronas-grid');
+                grid.innerHTML = '';
+
+                dados.poltronas.forEach(p => {
+                    const div = document.createElement('div');
+                    div.className = `poltrona ${p.status}`;
+                    div.innerText = p.poltrona;
+                    if (p.status === 'disponivel') {
+                        div.onclick = () => alternarPoltrona(div, p.poltrona);
+                    }
+                    grid.appendChild(div);
+                });
+            } catch (err) {
+                alert('Erro ao carregar mapa de poltronas.');
+            }
+        }
+
+        function alternarPoltrona(elemento, codigo) {
+            if (poltronasSelecionadas.has(codigo)) {
+                poltronasSelecionadas.delete(codigo);
+                elemento.classList.remove('selecionada');
+            } else {
+                poltronasSelecionadas.add(codigo);
+                elemento.classList.add('selecionada');
+            }
+            atualizarBarraSelecao();
+        }
+
+        function atualizarBarraSelecao() {
+            const arr = Array.from(poltronasSelecionadas);
+            const btn = document.getElementById('btn-abrir-pix');
+            
+            if (arr.length === 0) {
+                document.getElementById('poltronas-selecionadas-texto').innerText = 'Nenhuma';
+                document.getElementById('total-valor-texto').innerText = 'R$ 0,00';
+                btn.disabled = true;
+            } else {
+                document.getElementById('poltronas-selecionadas-texto').innerText = arr.join(', ');
+                const total = arr.length * VALOR_INGRESSO;
+                document.getElementById('total-valor-texto').innerText = `R$ ${total.toFixed(2).replace('.', ',')}`;
+                btn.disabled = false;
+            }
+        }
+
+        function abrirModalPix() {
+            const total = poltronasSelecionadas.size * VALOR_INGRESSO;
+            const textPix = `CINEPOP-RESERVA-${sessaoAtivaId}-${Array.from(poltronasSelecionadas).join('')}-R$${total}`;
+            
+            const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(textPix)}`;
+            document.getElementById('qr-code-img').src = qrUrl;
+            
+            document.getElementById('modal-pix').style.display = 'flex';
+        }
+
+        function fecharModalPix() {
+            document.getElementById('modal-pix').style.display = 'none';
+        }
+
+        function copiarPix() {
+            const codigo = document.getElementById('pix-copia-cola').innerText;
+            navigator.clipboard.writeText(codigo);
+            alert('Código Pix copiado para a área de transferência!');
+        }
+
+        async function confirmarPagamentoSimulado() {
+            fecharModalPix();
+            const poltronas = Array.from(poltronasSelecionadas);
+            const valorTotal = poltronas.length * VALOR_INGRESSO;
+
+            try {
+                const resReserva = await fetch('http://127.0.0.1:5001/reservas', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ sessao_id: sessaoAtivaId, poltronas: poltronas })
+                });
+
+                if (resReserva.status === 409) {
+                    alert('Aviso DevOps: Uma das poltronas selecionadas acabou de ser ocupada!');
+                    carregarMapaPoltronas(sessaoAtivaId, document.getElementById('filme-selecionado-titulo').innerText, '', '', '');
+                    return;
+                }
+
+                const dadosReserva = await resReserva.json();
+                const reserva_ids = dadosReserva.reserva_ids || [dadosReserva.reserva_id];
+
+                const resPag = await fetch('http://127.0.0.1:5002/pagamentos', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ reserva_ids: reserva_ids, valor: valorTotal, forma_pagamento: 'pix' })
+                });
+
+                if (resPag.status === 201) {
+                    alert(`✅ Sucesso! Pagamento Pix confirmado.\nPoltronas reservadas: ${poltronas.join(', ')}`);
+                    carregarMapaPoltronas(sessaoAtivaId, document.getElementById('filme-selecionado-titulo').innerText, '', '', '');
+                } else {
+                    alert('Falha ao processar o pagamento.');
+                }
+
+            } catch (err) {
+                alert('Erro na comunicação com os microserviços.');
+            }
+        }
+
+        function voltarParaCartaz() {
+            document.getElementById('cartaz-view').style.display = 'block';
+            document.getElementById('mapa-view').style.display = 'none';
+        }
+
+        carregarSessoes();
+    </script>
+</body>
+</html>
